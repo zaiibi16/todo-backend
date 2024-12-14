@@ -7,7 +7,7 @@ const sendTasks = async (req, res, next) => {
       userId: req.userId,
       completed: false,
     }).exec();
-    return res.status(200).send({ data: tasks });
+    return res.status(200).send({ success: true, data: { tasks: tasks } });
   } catch (err) {
     next(err);
   }
@@ -33,12 +33,11 @@ const updateTask = (prop, value) => (req, res, next) => {
         return res.status(200).send({
           success: false,
           error: {
-            message: "Task find error "
-          }
-          }
-          );
+            message: "Unable To Mark Task As Done",
+          },
+        });
       }
-      sendTasks(req, res, next);
+      res.status(200).send({ success: true, data: { message: "Task Marked Done Successfully" } });
     })
     .catch(next);
 };
@@ -54,16 +53,16 @@ exports.createTask = async (req, res, next) => {
       return res.status(200).send({
         success: false,
         error: {
-          message: "Task has no description"
-        }
-        });
+          message: "Task has no description",
+        },
+      });
     }
     const task = new Task({
       userId: req.userId,
       description: description,
     });
     await task.save();
-    res.send({ success: true, data: {message: "Task Added Successfully" }});
+    res.send({ success: true, data: { message: "Task Added Successfully" } });
   } catch (err) {
     next();
   }
