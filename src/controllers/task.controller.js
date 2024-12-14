@@ -30,7 +30,13 @@ const updateTask = (prop, value) => (req, res, next) => {
     .exec()
     .then((task) => {
       if (!task) {
-        return res.status(400).send({ message: "Task find error " });
+        return res.status(200).send({
+          success: false,
+          error: {
+            message: "Task find error "
+          }
+          }
+          );
       }
       sendTasks(req, res, next);
     })
@@ -43,16 +49,21 @@ exports.markUnDone = updateTask("completed", false);
 
 exports.createTask = async (req, res, next) => {
   try {
-    let title = req.body.title;
-    if (!title) {
-      return res.status(400).send({ message: "Task has no title" });
+    let description = req.body.description;
+    if (!description) {
+      return res.status(200).send({
+        success: false,
+        error: {
+          message: "Task has no description"
+        }
+        });
     }
     const task = new Task({
       userId: req.userId,
-      title: title,
+      description: description,
     });
     await task.save();
-    sendTasks(req, res, next);
+    res.send({ success: true, data: {message: "Task Added Successfully" }});
   } catch (err) {
     next();
   }

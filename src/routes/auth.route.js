@@ -17,7 +17,7 @@ router.get("/getUserData", [authCheck.verifyToken], controller.getUserData);
 
 router.post("/logout", authCheck.verifyToken, (req, res) => {
   res.clearCookie("auth-token");
-  return res.status(200).json({ message: "User logged out successfully." });
+  return res.status(200).json({ success: true, data: {message: "User logged out successfully" }});
 });
 
 module.exports = router;
